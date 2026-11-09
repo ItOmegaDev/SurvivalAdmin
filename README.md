@@ -9,19 +9,21 @@ Made by **Omega** ([@ItOmega](https://t.me/ItOmega))
 ## ✨ Features
 
 - **Role-based access control** — `user`, `staff`, `owner`
+- **UUID-based role storage** — roles stored by player UUID, immune to name changes
 - **Command blocking** — regular users can only use allowed commands
+- **Namespace/alias bypass prevention** — blocks `/bukkit:plugins`, `/minecraft:gamemode`, etc.
 - **Tab completion filtering** — blocked commands hidden from suggestions
 - **Custom messages** — join, quit, death, kill messages
 - **Role management** — `/staff`, `/unstaff`, `/owner`, `/unowner` commands
-- **Sit command** — `/sit` for all players
-- **Admin panel** — `/admin` shows available commands
+- **Granular permissions** — `survivaladmin.kick`, `survivaladmin.ban`, etc.
+- **Atomic file writes** — crash-safe role storage
 - **YAML config** — easy to edit `config.yml`
 
 ---
 
 ## 📦 Installation
 
-1. Download `SurvivalAdmin-1.0.0.jar` from [Releases](https://github.com/ItOmegaDev/SurvivalAdmin/releases)
+1. Download `SurvivalAdmin-1.1.0.jar` from [Releases](https://github.com/ItOmegaDev/SurvivalAdmin/releases)
 2. Put in `plugins/`
 3. Start server — `plugins/SurvivalAdmin/` is created with `config.yml`
 4. Edit `config.yml` to set owners and staff
@@ -35,7 +37,7 @@ Made by **Omega** ([@ItOmega](https://t.me/ItOmega))
 
 ```yaml
 # Plugin info
-version: "1.0.0"
+version: "1.1.0"
 author: "Omega"
 contact: "@ItOmega"
 description: "Professional administration plugin for Survival servers"
@@ -43,9 +45,25 @@ description: "Professional administration plugin for Survival servers"
 # Roles
 roles:
   default: "user"          # Default role for new players
-  staff: []                # List of staff player names
+  staff: []                # List of staff player names (auto-migrated to UUID on first join)
   owner:
-    - "DevOmega"           # List of owner player names
+    - "DevOmega"           # List of owner player names (auto-migrated to UUID on first join)
+
+# Granular permissions per role
+permissions:
+  user: []
+  staff:
+    - survivaladmin.kick
+    - survivaladmin.ban
+    - survivaladmin.tempban
+    - survivaladmin.unban
+    - survivaladmin.mute
+    - survivaladmin.unmute
+    - survivaladmin.tp
+    - survivaladmin.heal
+    - survivaladmin.feed
+  owner:
+    - survivaladmin.*      # All permissions
 
 # Commands allowed for regular users (all others are blocked)
 user-commands:
@@ -73,10 +91,15 @@ messages:
 
 ### roles.json (auto-generated)
 
-Roles are also stored in `plugins/SurvivalAdmin/roles.json` for runtime changes:
+Roles are stored by **UUID** in `plugins/SurvivalAdmin/roles.json`:
 ```json
-{"DevOmega":"owner","Player1":"staff"}
+{
+  "c1c3bec8-a19f-3fc5-afef-b5c7e1c3ab21": {"role": "owner", "name": "DevOmega"},
+  "550e8400-e29b-41d4-a716-446655440000": {"role": "staff", "name": "Player1"}
+}
 ```
+
+Legacy name-based roles (from older versions) are automatically migrated to UUID on player join.
 
 ---
 
@@ -116,6 +139,9 @@ Roles are also stored in `plugins/SurvivalAdmin/roles.json` for runtime changes:
 | `survivaladmin.owner` | Owner permissions | op |
 | `survivaladmin.staff` | Staff permissions | false |
 | `survivaladmin.user` | User permissions | true |
+| `survivaladmin.kick` | Kick players | false |
+| `survivaladmin.ban` | Ban players | false |
+| `survivaladmin.mute` | Mute players | false |
 
 ---
 
@@ -123,10 +149,10 @@ Roles are also stored in `plugins/SurvivalAdmin/roles.json` for runtime changes:
 
 ```bash
 ./build.sh
-# -> target/SurvivalAdmin-1.0.0.jar
+# -> target/SurvivalAdmin-1.1.0.jar
 ```
 
-Requires Paper/Purpur API jar (auto-detected).
+Requires Paper/Purpur API jar (auto-detected from `../../servers/`).
 
 ---
 
@@ -135,3 +161,5 @@ Requires Paper/Purpur API jar (auto-detected).
 This project is provided as-is for the OmegaSMP community.
 
 **Contact:** [@ItOmega](https://t.me/ItOmega)
+EOF
+echo "written"

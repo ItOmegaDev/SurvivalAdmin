@@ -58,5 +58,3 @@
         </plugins>
     </build>
 </project>
-EOF
-echo "written"

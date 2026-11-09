@@ -31,6 +31,17 @@ public class Config {
         return config.getStringList(path);
     }
 
+    public List<String> getPermissions(String role) {
+        return config.getStringList("permissions." + role);
+    }
+
+    public boolean hasPermission(String role, String perm) {
+        if ("owner".equals(role)) return true;
+        List<String> perms = getPermissions(role);
+        if (perms.contains("*") || perms.contains("survivaladmin.*")) return true;
+        return perms.contains(perm);
+    }
+
     public int getInt(String path, int def) {
         return config.getInt(path, def);
     }

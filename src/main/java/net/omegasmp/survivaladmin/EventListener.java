@@ -23,6 +23,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        plugin.getRoleManager().migrateOnJoin(player);
         String role = plugin.getRoleManager().getRole(player);
         String prefix = switch (role) {
             case "owner" -> "§6[Owner] ";
@@ -52,7 +53,13 @@ public class EventListener implements Listener {
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        String cmd = event.getMessage().toLowerCase().split(" ")[0].replace("/", "");
+        String raw = event.getMessage().toLowerCase().trim();
+        if (!raw.startsWith("/")) return;
+        String cmd = raw.substring(1).split(" ")[0];
+        // Strip namespace prefix (e.g., "bukkit:plugins" -> "plugins")
+        if (cmd.contains(":")) {
+            cmd = cmd.substring(cmd.lastIndexOf(":") + 1);
+        }
 
         // Allow commands for staff and owner
         if (plugin.getRoleManager().isStaff(player)) return;

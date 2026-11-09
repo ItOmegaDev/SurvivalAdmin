@@ -1,0 +1,43 @@
+name: SurvivalAdmin
+version: 1.0.0
+main: net.omegasmp.survivaladmin.SurvivalAdmin
+api-version: '1.21'
+author: Omega
+description: Professional administration plugin for Survival servers with role-based access control
+website: https://t.me/ItOmega
+
+commands:
+  sit:
+    description: Sit down
+    usage: /sit
+  staff:
+    description: Give staff role
+    usage: /staff <player>
+    permission: survivaladmin.owner
+  unstaff:
+    description: Remove staff role
+    usage: /unstaff <player>
+    permission: survivaladmin.owner
+  owner:
+    description: Give owner role
+    usage: /owner <player>
+    permission: survivaladmin.owner
+  unowner:
+    description: Remove owner role
+    usage: /unowner <player>
+    permission: survivaladmin.owner
+  admin:
+    description: Admin panel
+    usage: /admin
+    permission: survivaladmin.staff
+
+permissions:
+  survivaladmin.owner:
+    description: Owner permissions
+    default: op
+  survivaladmin.staff:
+    description: Staff permissions
+    default: false
+  survivaladmin.user:
+    description: User permissions
+    default: true

@@ -1,0 +1,6 @@
+# Runtime data — never commit
+config.yml
+roles.json
+logs/
+target/
+*.log

@@ -135,5 +135,3 @@ Requires Paper/Purpur API jar (auto-detected).
 This project is provided as-is for the OmegaSMP community.
 
 **Contact:** [@ItOmega](https://t.me/ItOmega)
-EOF
-echo "written"

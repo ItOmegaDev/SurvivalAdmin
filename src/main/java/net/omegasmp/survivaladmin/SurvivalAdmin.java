@@ -30,7 +30,7 @@ public final class SurvivalAdmin extends JavaPlugin {
         // Register commands
         new CommandRegistrar(this).registerAll();
 
-        getLogger().info("SurvivalAdmin v1.0.0 enabled — Made by Omega (@ItOmega)");
+        getLogger().info("SurvivalAdmin v1.1.0 enabled — Made by Omega (@ItOmega)");
     }
 
     @Override

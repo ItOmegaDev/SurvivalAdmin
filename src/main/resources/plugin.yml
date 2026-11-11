@@ -70,6 +70,22 @@ commands:
     description: View player inventory
     usage: /invsee <player>
     permission: survivaladmin.staff
+  inv:
+    description: View/edit player inventory
+    usage: /inv <player>
+    permission: survivaladmin.staff
+  getoff:
+    description: Ban player with time and reason
+    usage: /getoff <player> <time> [reason]
+    permission: survivaladmin.staff
+  invis:
+    description: Toggle invisibility
+    usage: /invis
+    permission: survivaladmin.staff
+  vanish:
+    description: Toggle invisibility
+    usage: /vanish
+    permission: survivaladmin.staff
 
 permissions:
   survivaladmin.owner:
@@ -125,4 +141,7 @@ permissions:
     default: false
   survivaladmin.invsee:
     description: View player inventory
+    default: false
+  survivaladmin.vanish:
+    description: Toggle invisibility
     default: false

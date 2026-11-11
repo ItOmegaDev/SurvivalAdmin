@@ -219,6 +219,10 @@ public class RoleManager {
         if (p == null) return false;
         String role = getRole(p);
         if ("owner".equals(role)) return true;
+        // Permission inheritance: owner > staff > user
+        if ("staff".equals(role)) {
+            if (((SurvivalAdmin) plugin).getConfigManager().hasPermission("user", perm)) return true;
+        }
         return ((SurvivalAdmin) plugin).getConfigManager().hasPermission(role, perm);
     }
 

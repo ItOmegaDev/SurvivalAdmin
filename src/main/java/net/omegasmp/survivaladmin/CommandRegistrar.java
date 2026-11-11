@@ -1,13 +1,8 @@
 package net.omegasmp.survivaladmin;
 
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
-
-import java.util.*;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class CommandRegistrar {
 
@@ -18,17 +13,28 @@ public class CommandRegistrar {
     }
 
     public void registerAll() {
-        // Sit command - available to all
-        register("sit", new SitCommand(plugin));
+        AdminCommands adminCmds = new AdminCommands(plugin);
 
-        // Role management commands - owner only
+        // Role management (owner only)
         register("staff", new RoleCommand(plugin, "staff"));
         register("unstaff", new RoleCommand(plugin, "unstaff"));
         register("owner", new RoleCommand(plugin, "owner"));
         register("unowner", new RoleCommand(plugin, "unowner"));
 
-        // Admin commands
+        // Admin panel
         register("admin", new AdminCommand(plugin));
+
+        // Sit command (all players)
+        register("sit", new SitCommand(plugin));
+
+        // Admin commands (staff+)
+        String[] adminCommands = {"heal", "feed", "tp", "gm", "gamemode", "fly", "god", "time", "weather", "invsee"};
+        for (String cmd : adminCommands) {
+            org.bukkit.command.PluginCommand pc = plugin.getCommand(cmd);
+            if (pc != null) {
+                pc.setExecutor(adminCmds);
+            }
+        }
     }
 
     private void register(String name, CommandExecutor executor) {

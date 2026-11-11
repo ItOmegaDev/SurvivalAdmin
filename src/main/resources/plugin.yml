@@ -1,5 +1,5 @@
 name: SurvivalAdmin
-version: 1.1.0
+version: 2.0.0
 main: net.omegasmp.survivaladmin.SurvivalAdmin
 api-version: '1.21'
 author: Omega
@@ -30,6 +30,46 @@ commands:
     description: Admin panel
     usage: /admin
     permission: survivaladmin.staff
+  heal:
+    description: Heal player
+    usage: /heal [player]
+    permission: survivaladmin.staff
+  feed:
+    description: Feed player
+    usage: /feed [player]
+    permission: survivaladmin.staff
+  tp:
+    description: Teleport to player
+    usage: /tp <player>
+    permission: survivaladmin.staff
+  gm:
+    description: Change gamemode
+    usage: /gm <0|1|2|3> [player]
+    permission: survivaladmin.staff
+  gamemode:
+    description: Change gamemode
+    usage: /gamemode <survival|creative|adventure|spectator> [player]
+    permission: survivaladmin.staff
+  fly:
+    description: Toggle flight
+    usage: /fly [player]
+    permission: survivaladmin.staff
+  god:
+    description: Toggle god mode
+    usage: /god [player]
+    permission: survivaladmin.staff
+  time:
+    description: Set time
+    usage: /time <day|night|noon|midnight|number>
+    permission: survivaladmin.staff
+  weather:
+    description: Set weather
+    usage: /weather <clear|rain|thunder>
+    permission: survivaladmin.staff
+  invsee:
+    description: View player inventory
+    usage: /invsee <player>
+    permission: survivaladmin.staff
 
 permissions:
   survivaladmin.owner:
@@ -41,3 +81,48 @@ permissions:
   survivaladmin.user:
     description: User permissions
     default: true
+  survivaladmin.kick:
+    description: Kick players
+    default: false
+  survivaladmin.ban:
+    description: Ban players
+    default: false
+  survivaladmin.tempban:
+    description: Temporarily ban players
+    default: false
+  survivaladmin.unban:
+    description: Unban players
+    default: false
+  survivaladmin.mute:
+    description: Mute players
+    default: false
+  survivaladmin.unmute:
+    description: Unmute players
+    default: false
+  survivaladmin.tp:
+    description: Teleport to players
+    default: false
+  survivaladmin.heal:
+    description: Heal players
+    default: false
+  survivaladmin.feed:
+    description: Feed players
+    default: false
+  survivaladmin.gamemode:
+    description: Change gamemode
+    default: false
+  survivaladmin.fly:
+    description: Toggle flight
+    default: false
+  survivaladmin.god:
+    description: Toggle god mode
+    default: false
+  survivaladmin.time:
+    description: Change time
+    default: false
+  survivaladmin.weather:
+    description: Change weather
+    default: false
+  survivaladmin.invsee:
+    description: View player inventory
+    default: false

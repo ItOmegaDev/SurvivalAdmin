@@ -2,28 +2,32 @@
 
 **Professional administration plugin for Minecraft Survival servers with role-based access control.**
 
-Made by **Omega** ([@ItOmega](https://t.me/ItOmega))
+One jar, Paper/Purpur/Spigot compatible. Made by **Omega** ([@ItOmega](https://t.me/ItOmega)) · [GitHub](https://github.com/ItOmegaDev/SurvivalAdmin) · [Releases](https://github.com/ItOmegaDev/SurvivalAdmin/releases)
 
 ---
 
 ## ✨ Features
 
-- **Role-based access control** — `user`, `staff`, `owner`
-- **UUID-based role storage** — roles stored by player UUID, immune to name changes
-- **Command blocking** — regular users can only use allowed commands
+- **Role-based access control** — `user`, `staff`, `owner` with permission inheritance
+- **UUID-based role storage** — roles stored by player UUID, immune to name changes and spoofing
+- **Command blocking** — regular users can only use whitelisted commands; all others are blocked
 - **Namespace/alias bypass prevention** — blocks `/bukkit:plugins`, `/minecraft:gamemode`, etc.
 - **Tab completion filtering** — blocked commands hidden from suggestions
-- **Custom messages** — join, quit, death, kill messages
-- **Role management** — `/staff`, `/unstaff`, `/owner`, `/unowner` commands
-- **Granular permissions** — `survivaladmin.kick`, `survivaladmin.ban`, etc.
+- **Custom messages** — join, quit, death, kill messages with placeholders
+- **15+ admin commands** — heal, feed, tp, gamemode, fly, god, time, weather, invsee, kick, ban, tempban, mute, vanish, sit
+- **Inventory inspection** — `/inv <player>` to view/edit player inventory
+- **Ban with duration** — `/getoff <player> <time> [reason]` supports `1h`, `1d`, `30m`, `permanent`
+- **Vanish mode** — `/invis` / `/vanish` to become invisible in TAB and the world
+- **Granular permissions** — `survivaladmin.kick`, `survivaladmin.ban`, `survivaladmin.mute`, etc.
 - **Atomic file writes** — crash-safe role storage
+- **Audit log** — every admin action is logged with timestamp and actor
 - **YAML config** — easy to edit `config.yml`
 
 ---
 
 ## 📦 Installation
 
-1. Download `SurvivalAdmin-1.1.0.jar` from [Releases](https://github.com/ItOmegaDev/SurvivalAdmin/releases)
+1. Download `SurvivalAdmin-2.0.0.jar` from [Releases](https://github.com/ItOmegaDev/SurvivalAdmin/releases)
 2. Put in `plugins/`
 3. Start server — `plugins/SurvivalAdmin/` is created with `config.yml`
 4. Edit `config.yml` to set owners and staff
@@ -36,12 +40,6 @@ Made by **Omega** ([@ItOmega](https://t.me/ItOmega))
 ### config.yml
 
 ```yaml
-# Plugin info
-version: "1.1.0"
-author: "Omega"
-contact: "@ItOmega"
-description: "Professional administration plugin for Survival servers"
-
 # Roles
 roles:
   default: "user"          # Default role for new players
@@ -62,6 +60,13 @@ permissions:
     - survivaladmin.tp
     - survivaladmin.heal
     - survivaladmin.feed
+    - survivaladmin.gamemode
+    - survivaladmin.fly
+    - survivaladmin.god
+    - survivaladmin.time
+    - survivaladmin.weather
+    - survivaladmin.invsee
+    - survivaladmin.vanish
   owner:
     - survivaladmin.*      # All permissions
 
@@ -121,6 +126,18 @@ Legacy name-based roles (from older versions) are automatically migrated to UUID
 | `/tempban <player> <duration> [reason]` | Temporarily ban |
 | `/unban <player>` | Unban a player |
 | `/mute <player> [reason]` | Mute a player |
+| `/unmute <player>` | Unmute a player |
+| `/heal [player]` | Heal player |
+| `/feed [player]` | Feed player |
+| `/tp <player>` | Teleport to player |
+| `/gm <0-3> [player]` | Change gamemode |
+| `/fly [player]` | Toggle flight |
+| `/god [player]` | Toggle god mode |
+| `/time <day/night/number>` | Change time |
+| `/weather <clear/rain/thunder>` | Change weather |
+| `/inv <player>` | View/edit player inventory |
+| `/getoff <player> <time> [reason]` | Ban with time and reason |
+| `/invis` / `/vanish` | Toggle invisibility |
 
 ### For owners only
 | Command | Description |
@@ -141,7 +158,20 @@ Legacy name-based roles (from older versions) are automatically migrated to UUID
 | `survivaladmin.user` | User permissions | true |
 | `survivaladmin.kick` | Kick players | false |
 | `survivaladmin.ban` | Ban players | false |
+| `survivaladmin.tempban` | Temporarily ban players | false |
+| `survivaladmin.unban` | Unban players | false |
 | `survivaladmin.mute` | Mute players | false |
+| `survivaladmin.unmute` | Unmute players | false |
+| `survivaladmin.tp` | Teleport to players | false |
+| `survivaladmin.heal` | Heal players | false |
+| `survivaladmin.feed` | Feed players | false |
+| `survivaladmin.gamemode` | Change gamemode | false |
+| `survivaladmin.fly` | Toggle flight | false |
+| `survivaladmin.god` | Toggle god mode | false |
+| `survivaladmin.time` | Change time | false |
+| `survivaladmin.weather` | Change weather | false |
+| `survivaladmin.invsee` | View player inventory | false |
+| `survivaladmin.vanish` | Toggle invisibility | false |
 
 ---
 
@@ -149,7 +179,7 @@ Legacy name-based roles (from older versions) are automatically migrated to UUID
 
 ```bash
 ./build.sh
-# -> target/SurvivalAdmin-1.1.0.jar
+# -> target/SurvivalAdmin-2.0.0.jar
 ```
 
 Requires Paper/Purpur API jar (auto-detected from `../../servers/`).
@@ -158,6 +188,6 @@ Requires Paper/Purpur API jar (auto-detected from `../../servers/`).
 
 ## 📄 License
 
-This project is provided as-is for the OmegaSMP community.
+MIT
 
 **Contact:** [@ItOmega](https://t.me/ItOmega)

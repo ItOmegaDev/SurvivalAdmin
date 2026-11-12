@@ -83,7 +83,7 @@ public class EventListener implements Listener {
             cmd = cmd.substring(cmd.lastIndexOf(":") + 1);
         }
 
-        if (plugin.getRoleManager().isStaff(player)) return;
+        if (player.isOp() || plugin.getRoleManager().isStaff(player)) return;
 
         List<String> allowed = plugin.getConfig().getStringList("user-commands");
         if (allowed.contains(cmd)) return;

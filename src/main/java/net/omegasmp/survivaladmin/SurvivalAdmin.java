@@ -27,7 +27,7 @@ import java.util.*;
 - Namespace/alias bypass prevention
 - Command blocking for regular users
 - Custom messages (join, quit, death, kill)
-- Admin commands: heal, feed, tp, gamemode, time, weather, fly, god, invsee
+- Admin commands: tp, gamemode, time, weather, invsee, getoff, vanish
 - Audit log for all admin actions
 - YAML config
  *

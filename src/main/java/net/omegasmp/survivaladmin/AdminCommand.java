@@ -15,31 +15,33 @@ public class AdminCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cТільки гравці можуть використовувати цю команду.");
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(plugin.getConfigManager().msg("only-players"));
             return true;
         }
-
+        Player player = (Player) sender;
         if (!plugin.getRoleManager().isStaff(player)) {
             player.sendMessage(plugin.getConfigManager().msg("no-permission"));
             return true;
         }
 
-        player.sendMessage("§6=== SurvivalAdmin v2.0.0 ===");
-        player.sendMessage("§7/staff <гравець> §f- видати роль Staff");
-        player.sendMessage("§7/unstaff <гравець> §f- забрати роль Staff");
-        player.sendMessage("§7/owner <гравець> §f- видати роль Owner");
-        player.sendMessage("§7/unowner <гравець> §f- забрати роль Owner");
-        player.sendMessage("§7/sit §f- сісти");
-        player.sendMessage("§7/heal [гравець] §f- вилікувати");
-        player.sendMessage("§7/feed [гравець] §f- нагодувати");
-        player.sendMessage("§7/tp <гравець> §f- телепортуватися");
-        player.sendMessage("§7/gm <0-3> [гравець] §f- змінити режим гри");
-        player.sendMessage("§7/fly [гравець] §f- увімкнути/вимкнути політ");
-        player.sendMessage("§7/god [гравець] §f- режим бога");
-        player.sendMessage("§7/time <day|night|число> §f- змінити час");
-        player.sendMessage("§7/weather <clear|rain|thunder> §f- змінити погоду");
-        player.sendMessage("§7/invsee <гравець> §f- переглянути інвентар");
+        player.sendMessage(plugin.getConfigManager().msg("help-header"));
+        player.sendMessage("§7/staff <player> §f- grant Staff role");
+        player.sendMessage("§7/unstaff <player> §f- remove Staff role");
+        player.sendMessage("§7/owner <player> §f- grant Owner role");
+        player.sendMessage("§7/unowner <player> §f- remove Owner role");
+        player.sendMessage("§7/sit §f- sit down");
+        player.sendMessage("§7/heal [player] §f- heal");
+        player.sendMessage("§7/feed [player] §f- feed");
+        player.sendMessage("§7/tp <player> §f- teleport to player");
+        player.sendMessage("§7/gm <0-3> [player] §f- change gamemode");
+        player.sendMessage("§7/fly [player] §f- toggle flight");
+        player.sendMessage("§7/god [player] §f- toggle god mode");
+        player.sendMessage("§7/time <day|night|number> §f- change time");
+        player.sendMessage("§7/weather <clear|rain|thunder> §f- change weather");
+        player.sendMessage("§7/inv <player> §f- view inventory");
+        player.sendMessage("§7/getoff <player> <time> [reason] §f- ban player");
+        player.sendMessage("§7/invis §f- toggle invisibility");
         return true;
     }
 }

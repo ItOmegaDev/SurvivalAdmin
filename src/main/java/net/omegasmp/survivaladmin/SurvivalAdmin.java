@@ -63,6 +63,9 @@ public final class SurvivalAdmin extends JavaPlugin {
     public void onDisable() {
         if (this.roleManager != null) this.roleManager.save();
         if (this.auditLog != null) this.auditLog.close();
+        try {
+            org.bukkit.Bukkit.broadcastMessage(this.config.msg("stop"));
+        } catch (Exception ignored) { }
         getLogger().info("SurvivalAdmin disabled.");
     }
 

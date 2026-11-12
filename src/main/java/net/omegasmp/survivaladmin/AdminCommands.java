@@ -21,7 +21,7 @@ public class AdminCommands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Only players can use this command.");
+            sender.sendMessage(plugin.getConfigManager().msg("only-players"));
             return true;
         }
         Player player = (Player) sender;
@@ -76,9 +76,9 @@ public class AdminCommands implements CommandExecutor {
         target.setHealth(target.getMaxHealth());
         target.setFoodLevel(20);
         target.setSaturation(20);
-        target.sendMessage("Healed!");
+        target.sendMessage(plugin.getConfigManager().msg("healed"));
         if (!target.equals(player)) {
-            player.sendMessage("Healed " + target.getName());
+            player.sendMessage(plugin.getConfigManager().msg("healed-other").replace("{player}", target.getName()));
         }
         plugin.getAuditLog().log(player.getName(), "HEAL", target.getName(), "health+food");
     }
@@ -98,9 +98,9 @@ public class AdminCommands implements CommandExecutor {
         }
         target.setFoodLevel(20);
         target.setSaturation(20);
-        target.sendMessage("Fed!");
+        target.sendMessage(plugin.getConfigManager().msg("fed"));
         if (!target.equals(player)) {
-            player.sendMessage("Fed " + target.getName());
+            player.sendMessage(plugin.getConfigManager().msg("fed-other").replace("{player}", target.getName()));
         }
         plugin.getAuditLog().log(player.getName(), "FEED", target.getName(), "food");
     }
@@ -111,7 +111,7 @@ public class AdminCommands implements CommandExecutor {
             return;
         }
         if (args.length < 1) {
-            player.sendMessage("Usage: /tp <player>");
+            player.sendMessage(plugin.getConfigManager().msg("usage-tp"));
             return;
         }
         Player target = Bukkit.getPlayer(args[0]);
@@ -120,7 +120,7 @@ public class AdminCommands implements CommandExecutor {
             return;
         }
         player.teleport(target);
-        player.sendMessage("Teleported to " + target.getName());
+        player.sendMessage(plugin.getConfigManager().msg("teleported").replace("{player}", target.getName()));
         plugin.getAuditLog().log(player.getName(), "TP", target.getName(), "teleport");
     }
 
@@ -130,7 +130,7 @@ public class AdminCommands implements CommandExecutor {
             return;
         }
         if (args.length < 1) {
-            player.sendMessage("Usage: /gm <0|1|2|3> [player]");
+            player.sendMessage(plugin.getConfigManager().msg("usage-gm"));
             return;
         }
         GameMode gm = null;
@@ -141,7 +141,7 @@ public class AdminCommands implements CommandExecutor {
         else if (mode.equals("3") || mode.equals("spectator") || mode.equals("sp")) gm = GameMode.SPECTATOR;
 
         if (gm == null) {
-            player.sendMessage("Invalid gamemode.");
+            player.sendMessage(plugin.getConfigManager().msg("invalid-gamemode"));
             return;
         }
         Player target = player;
@@ -153,9 +153,10 @@ public class AdminCommands implements CommandExecutor {
             }
         }
         target.setGameMode(gm);
-        target.sendMessage("Gamemode changed to " + gm.name());
+        target.sendMessage(plugin.getConfigManager().msg("gamemode-changed").replace("{mode}", gm.name()));
         if (!target.equals(player)) {
-            player.sendMessage("Changed " + target.getName() + " gamemode to " + gm.name());
+            player.sendMessage(plugin.getConfigManager().msg("gamemode-changed-other")
+                    .replace("{player}", target.getName()).replace("{mode}", gm.name()));
         }
         plugin.getAuditLog().log(player.getName(), "GAMEMODE", target.getName(), gm.name());
     }
@@ -176,9 +177,10 @@ public class AdminCommands implements CommandExecutor {
         boolean newState = !target.getAllowFlight();
         target.setAllowFlight(newState);
         target.setFlying(newState);
-        target.sendMessage(newState ? "Flight enabled" : "Flight disabled");
+        target.sendMessage(newState ? plugin.getConfigManager().msg("fly-on") : plugin.getConfigManager().msg("fly-off"));
         if (!target.equals(player)) {
-            player.sendMessage((newState ? "Enabled" : "Disabled") + " flight for " + target.getName());
+            player.sendMessage(plugin.getConfigManager().msg("fly-other")
+                    .replace("{player}", target.getName()).replace("{state}", newState ? "enabled" : "disabled"));
         }
         plugin.getAuditLog().log(player.getName(), "FLY", target.getName(), newState ? "on" : "off");
     }
@@ -198,9 +200,10 @@ public class AdminCommands implements CommandExecutor {
         }
         boolean newState = !target.isInvulnerable();
         target.setInvulnerable(newState);
-        target.sendMessage(newState ? "God mode enabled" : "God mode disabled");
+        target.sendMessage(newState ? plugin.getConfigManager().msg("god-on") : plugin.getConfigManager().msg("god-off"));
         if (!target.equals(player)) {
-            player.sendMessage((newState ? "Enabled" : "Disabled") + " god mode for " + target.getName());
+            player.sendMessage(plugin.getConfigManager().msg("god-other")
+                    .replace("{player}", target.getName()).replace("{state}", newState ? "enabled" : "disabled"));
         }
         plugin.getAuditLog().log(player.getName(), "GOD", target.getName(), newState ? "on" : "off");
     }
@@ -211,7 +214,7 @@ public class AdminCommands implements CommandExecutor {
             return;
         }
         if (args.length < 1) {
-            player.sendMessage("Usage: /time <day|night|noon|midnight|number>");
+            player.sendMessage(plugin.getConfigManager().msg("usage-time"));
             return;
         }
         long time = -1;
@@ -224,11 +227,11 @@ public class AdminCommands implements CommandExecutor {
             try { time = Long.parseLong(args[0]); } catch (NumberFormatException e) { time = -1; }
         }
         if (time < 0) {
-            player.sendMessage("Invalid time.");
+            player.sendMessage(plugin.getConfigManager().msg("invalid-time"));
             return;
         }
         player.getWorld().setTime(time);
-        player.sendMessage("Time set: " + args[0]);
+        player.sendMessage(plugin.getConfigManager().msg("time-set").replace("{time}", args[0]));
         plugin.getAuditLog().log(player.getName(), "TIME", player.getWorld().getName(), args[0]);
     }
 
@@ -238,24 +241,24 @@ public class AdminCommands implements CommandExecutor {
             return;
         }
         if (args.length < 1) {
-            player.sendMessage("Usage: /weather <clear|rain|thunder>");
+            player.sendMessage(plugin.getConfigManager().msg("usage-weather"));
             return;
         }
         String w = args[0].toLowerCase();
         if (w.equals("clear") || w.equals("sun")) {
             player.getWorld().setStorm(false);
             player.getWorld().setThundering(false);
-            player.sendMessage("Weather: clear");
+            player.sendMessage(plugin.getConfigManager().msg("weather-set").replace("{weather}", "clear"));
         } else if (w.equals("rain")) {
             player.getWorld().setStorm(true);
             player.getWorld().setThundering(false);
-            player.sendMessage("Weather: rain");
+            player.sendMessage(plugin.getConfigManager().msg("weather-set").replace("{weather}", "rain"));
         } else if (w.equals("thunder")) {
             player.getWorld().setStorm(true);
             player.getWorld().setThundering(true);
-            player.sendMessage("Weather: thunder");
+            player.sendMessage(plugin.getConfigManager().msg("weather-set").replace("{weather}", "thunder"));
         } else {
-            player.sendMessage("Invalid weather. Use: clear, rain, thunder");
+            player.sendMessage(plugin.getConfigManager().msg("invalid-weather"));
             return;
         }
         plugin.getAuditLog().log(player.getName(), "WEATHER", player.getWorld().getName(), args[0]);
@@ -267,7 +270,7 @@ public class AdminCommands implements CommandExecutor {
             return;
         }
         if (args.length < 1) {
-            player.sendMessage("Usage: /inv <player> or /invsee <player>");
+            player.sendMessage(plugin.getConfigManager().msg("usage-inv"));
             return;
         }
         Player target = Bukkit.getPlayer(args[0]);
@@ -276,7 +279,7 @@ public class AdminCommands implements CommandExecutor {
             return;
         }
         player.openInventory(target.getInventory());
-        player.sendMessage("Opened inventory of " + target.getName());
+        player.sendMessage(plugin.getConfigManager().msg("invsee-opened").replace("{player}", target.getName()));
         plugin.getAuditLog().log(player.getName(), "INV", target.getName(), "opened inventory");
     }
 
@@ -286,8 +289,8 @@ public class AdminCommands implements CommandExecutor {
             return;
         }
         if (args.length < 2) {
-            player.sendMessage("Usage: /getoff <player> <time> [reason]");
-            player.sendMessage("Time: 1h, 1d, 30m, permanent");
+            player.sendMessage(plugin.getConfigManager().msg("usage-getoff"));
+            player.sendMessage(plugin.getConfigManager().msg("time-formats"));
             return;
         }
         String targetName = args[0];
@@ -303,7 +306,7 @@ public class AdminCommands implements CommandExecutor {
         }
         long duration = parseDuration(args[1]);
         if (duration == -1) {
-            player.sendMessage("Invalid time format. Use: 1h, 1d, 30m, permanent");
+            player.sendMessage(plugin.getConfigManager().msg("invalid-time-format"));
             return;
         }
         org.bukkit.BanList banList = Bukkit.getBanList(org.bukkit.BanList.Type.NAME);
@@ -314,10 +317,12 @@ public class AdminCommands implements CommandExecutor {
         }
         if (target != null) {
             String timeStr = (duration == 0) ? "permanent" : formatDuration(duration);
-            target.kickPlayer("You are banned!\nReason: " + reason + "\nTime: " + timeStr);
+            target.kickPlayer(plugin.getConfigManager().msg("banned")
+                    .replace("{player}", targetName).replace("{time}", timeStr).replace("{reason}", reason));
         }
         String timeStr = (duration == 0) ? "permanent" : formatDuration(duration);
-        player.sendMessage(targetName + " banned for " + timeStr + ". Reason: " + reason);
+        player.sendMessage(plugin.getConfigManager().msg("banned")
+                .replace("{player}", targetName).replace("{time}", timeStr).replace("{reason}", reason));
         plugin.getAuditLog().log(player.getName(), "BAN", targetName, "duration=" + duration + " reason=" + reason);
     }
 
@@ -335,7 +340,7 @@ public class AdminCommands implements CommandExecutor {
                 }
             }
             player.setPlayerListName("");
-            player.sendMessage("You are now invisible");
+            player.sendMessage(plugin.getConfigManager().msg("vanished-on"));
             plugin.getAuditLog().log(player.getName(), "VANISH", player.getName(), "on");
         } else {
             player.removeMetadata("survivaladmin_vanished", plugin);
@@ -345,7 +350,7 @@ public class AdminCommands implements CommandExecutor {
                 }
             }
             player.setPlayerListName(player.getName());
-            player.sendMessage("You are now visible");
+            player.sendMessage(plugin.getConfigManager().msg("vanished-off"));
             plugin.getAuditLog().log(player.getName(), "VANISH", player.getName(), "off");
         }
     }

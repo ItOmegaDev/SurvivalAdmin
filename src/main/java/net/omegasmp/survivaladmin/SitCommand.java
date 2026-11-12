@@ -13,18 +13,16 @@ public class SitCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cТільки гравці можуть використовувати цю команду.");
+            sender.sendMessage(plugin.getConfigManager().msg("only-players"));
             return true;
         }
-        // Toggle sit
         if (player.isSneaking()) {
             player.setSneaking(false);
         }
-        // Use Paper's sit via pose
         try {
             player.setPose(org.bukkit.entity.Pose.SITTING);
         } catch (Exception e) {
-            player.sendMessage("§cНе вдалося сісти.");
+            player.sendMessage(plugin.getConfigManager().msg("sit-error"));
         }
         return true;
     }

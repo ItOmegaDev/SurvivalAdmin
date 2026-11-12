@@ -19,7 +19,7 @@ public class RoleCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cТільки гравці можуть використовувати цю команду.");
+            sender.sendMessage(plugin.getConfigManager().msg("only-players"));
             return true;
         }
 
@@ -30,7 +30,7 @@ public class RoleCommand implements CommandExecutor {
         }
 
         if (args.length < 1) {
-            player.sendMessage("§eВикористання: /" + action + " <гравець>");
+            player.sendMessage(plugin.getConfigManager().msg("usage-role").replace("{action}", action));
             return true;
         }
 
@@ -48,25 +48,25 @@ public class RoleCommand implements CommandExecutor {
                 plugin.getRoleManager().setRole(targetLower, "staff");
                 player.sendMessage(plugin.getConfigManager().msg("role-given")
                         .replace("{player}", target.getName()).replace("{role}", "staff"));
-                target.sendMessage("§aВам видано роль §eStaff§a!");
+                target.sendMessage(plugin.getConfigManager().msg("role-staff-given"));
             }
             case "unstaff" -> {
                 plugin.getRoleManager().setRole(targetLower, "user");
                 player.sendMessage(plugin.getConfigManager().msg("role-removed")
                         .replace("{player}", target.getName()).replace("{role}", "staff"));
-                target.sendMessage("§cУ вас забрано роль §eStaff§c.");
+                target.sendMessage(plugin.getConfigManager().msg("role-staff-removed"));
             }
             case "owner" -> {
                 plugin.getRoleManager().setRole(targetLower, "owner");
                 player.sendMessage(plugin.getConfigManager().msg("role-given")
                         .replace("{player}", target.getName()).replace("{role}", "owner"));
-                target.sendMessage("§aВам видано роль §6Owner§a!");
+                target.sendMessage(plugin.getConfigManager().msg("role-owner-given"));
             }
             case "unowner" -> {
                 plugin.getRoleManager().setRole(targetLower, "user");
                 player.sendMessage(plugin.getConfigManager().msg("role-removed")
                         .replace("{player}", target.getName()).replace("{role}", "owner"));
-                target.sendMessage("§cУ вас забрано роль §6Owner§c.");
+                target.sendMessage(plugin.getConfigManager().msg("role-owner-removed"));
             }
         }
         return true;

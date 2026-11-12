@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 import java.util.Date;
 
-public class AdminCommands implements CommandExecutor {
+public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCompleter {
 
     private final SurvivalAdmin plugin;
 
@@ -396,5 +396,44 @@ public class AdminCommands implements CommandExecutor {
         if (minutes > 0) sb.append(minutes).append("m ");
         if (sb.length() == 0) sb.append(seconds).append("s");
         return sb.toString().trim();
+    }
+
+    @Override
+    public java.util.List<String> onTabComplete(org.bukkit.command.CommandSender sender, org.bukkit.command.Command command, String alias, String[] args) {
+        String cmd = command.getName().toLowerCase();
+        java.util.List<String> completions = new java.util.ArrayList<>();
+        if (args.length == 1) {
+            String prefix = args[0].toLowerCase();
+            if (cmd.equals("gm") || cmd.equals("gamemode")) {
+                for (String v : new String[]{"0","1","2","3","survival","creative","adventure","spectator"}) {
+                    if (v.startsWith(prefix)) completions.add(v);
+                }
+            } else if (cmd.equals("time")) {
+                for (String v : new String[]{"day","night","noon","midnight"}) {
+                    if (v.startsWith(prefix)) completions.add(v);
+                }
+            } else if (cmd.equals("weather")) {
+                for (String v : new String[]{"clear","rain","thunder"}) {
+                    if (v.startsWith(prefix)) completions.add(v);
+                }
+            } else {
+                for (org.bukkit.entity.Player p : org.bukkit.Bukkit.getOnlinePlayers()) {
+                    if (p.getName().toLowerCase().startsWith(prefix)) completions.add(p.getName());
+                }
+            }
+        } else if (args.length == 2 && (cmd.equals("gm") || cmd.equals("gamemode"))) {
+            String prefix = args[1].toLowerCase();
+            for (org.bukkit.entity.Player p : org.bukkit.Bukkit.getOnlinePlayers()) {
+                if (p.getName().toLowerCase().startsWith(prefix)) completions.add(p.getName());
+            }
+        } else if (args.length == 2 && cmd.equals("getoff")) {
+            String prefix = args[1].toLowerCase();
+            for (String v : new String[]{"10m","1h","1d","permanent"}) {
+                if (v.startsWith(prefix)) completions.add(v);
+            }
+        } else if (args.length >= 3 && cmd.equals("getoff")) {
+            // no completion
+        }
+        return completions;
     }
 }

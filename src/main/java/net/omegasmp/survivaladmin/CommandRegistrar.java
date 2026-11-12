@@ -23,6 +23,7 @@ public class CommandRegistrar {
 
         // Admin panel
         register("admin", new AdminCommand(plugin));
+        register("help", new AdminCommand(plugin));
 
         // Sit command (all players)
         register("sit", new SitCommand(plugin));

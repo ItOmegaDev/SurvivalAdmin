@@ -98,6 +98,18 @@ public class Config {
         return prefix() + " §7- " + colored;
     }
 
+    public String msgRaw(String key) {
+        String m = "";
+        if (messages != null) {
+            m = messages.getString(key, "");
+        }
+        if (m == null || m.isEmpty()) {
+            m = config.getString("messages." + key, "");
+        }
+        if (m == null) m = "";
+        return m.replace("&", "§");
+    }
+
     public void save() {
         try {
             config.save(file);

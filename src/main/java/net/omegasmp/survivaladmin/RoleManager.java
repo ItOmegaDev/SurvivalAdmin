@@ -117,16 +117,15 @@ public class RoleManager {
 
     public String getRole(Player player) {
         if (player == null) return plugin.getConfig().getString("roles.default", "user");
-        String uuid = player.getUniqueId().toString();
-        // Update name cache
-        nameCache.put(uuid, player.getName());
-        if (roles.containsKey(uuid)) return roles.get(uuid);
-        // Check config owners/staff by name
+        // Config owners/staff take precedence (bootstrap)
         List<String> owners = plugin.getConfig().getStringList("roles.owner");
         List<String> staff = plugin.getConfig().getStringList("roles.staff");
         String name = player.getName().toLowerCase();
         if (owners.stream().anyMatch(s -> s.equalsIgnoreCase(name))) return "owner";
         if (staff.stream().anyMatch(s -> s.equalsIgnoreCase(name))) return "staff";
+        String uuid = player.getUniqueId().toString();
+        nameCache.put(uuid, player.getName());
+        if (roles.containsKey(uuid)) return roles.get(uuid);
         return plugin.getConfig().getString("roles.default", "user");
     }
 

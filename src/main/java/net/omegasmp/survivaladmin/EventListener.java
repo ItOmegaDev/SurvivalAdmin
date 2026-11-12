@@ -26,7 +26,7 @@ public class EventListener implements Listener {
         Player player = event.getPlayer();
         plugin.getRoleManager().migrateOnJoin(player);
         String role = plugin.getRoleManager().getRole(player);
-        event.setJoinMessage(plugin.getConfigManager().msg("join").replace("{player}", rolePrefix(role) + player.getName()));
+        event.setJoinMessage(plugin.getConfigManager().msgRaw("join").replace("{player}", rolePrefix(role) + player.getName()));
     }
 
     private String rolePrefix(String role) {
@@ -40,7 +40,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        event.setQuitMessage(plugin.getConfigManager().msg("quit").replace("{player}", player.getName()));
+        event.setQuitMessage(plugin.getConfigManager().msgRaw("quit").replace("{player}", player.getName()));
     }
 
     @EventHandler

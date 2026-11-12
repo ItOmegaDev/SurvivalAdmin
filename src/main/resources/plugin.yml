@@ -30,6 +30,10 @@ commands:
     description: Admin panel
     usage: /admin
     permission: survivaladmin.staff
+  help:
+    description: SurvivalAdmin help
+    usage: /help
+    permission: survivaladmin.user
   heal:
     description: Heal player
     usage: /heal [player]

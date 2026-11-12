@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class RoleCommand implements CommandExecutor {
+public class RoleCommand implements CommandExecutor, org.bukkit.command.TabCompleter {
 
     private final SurvivalAdmin plugin;
     private final String action;
@@ -70,5 +70,18 @@ public class RoleCommand implements CommandExecutor {
             }
         }
         return true;
+    }
+
+    @Override
+    public java.util.List<String> onTabComplete(org.bukkit.command.CommandSender sender, org.bukkit.command.Command command, String alias, String[] args) {
+        if (args.length == 1) {
+            String prefix = args[0].toLowerCase();
+            java.util.List<String> out = new java.util.ArrayList<>();
+            for (org.bukkit.entity.Player p : org.bukkit.Bukkit.getOnlinePlayers()) {
+                if (p.getName().toLowerCase().startsWith(prefix)) out.add(p.getName());
+            }
+            return out;
+        }
+        return java.util.Collections.emptyList();
     }
 }

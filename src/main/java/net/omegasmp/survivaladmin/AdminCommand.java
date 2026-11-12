@@ -5,7 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class AdminCommand implements CommandExecutor {
+public class AdminCommand implements CommandExecutor, org.bukkit.command.TabCompleter {
 
     private final SurvivalAdmin plugin;
 
@@ -43,5 +43,10 @@ public class AdminCommand implements CommandExecutor {
         player.sendMessage("§7/getoff <player> <time> [reason] §f- ban player");
         player.sendMessage("§7/invis §f- toggle invisibility");
         return true;
+    }
+
+    @Override
+    public java.util.List<String> onTabComplete(org.bukkit.command.CommandSender sender, org.bukkit.command.Command command, String alias, String[] args) {
+        return java.util.Collections.emptyList();
     }
 }

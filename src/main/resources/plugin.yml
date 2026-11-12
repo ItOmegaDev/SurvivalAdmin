@@ -7,9 +7,6 @@ description: Professional administration plugin for Survival servers with role-b
 website: https://t.me/ItOmega
 
 commands:
-  sit:
-    description: Sit down
-    usage: /sit
   staff:
     description: Give staff role
     usage: /staff <player>
@@ -34,14 +31,6 @@ commands:
     description: SurvivalAdmin help
     usage: /help
     permission: survivaladmin.user
-  heal:
-    description: Heal player
-    usage: /heal [player]
-    permission: survivaladmin.staff
-  feed:
-    description: Feed player
-    usage: /feed [player]
-    permission: survivaladmin.staff
   tp:
     description: Teleport to player
     usage: /tp <player>
@@ -53,14 +42,6 @@ commands:
   gamemode:
     description: Change gamemode
     usage: /gamemode <survival|creative|adventure|spectator> [player]
-    permission: survivaladmin.staff
-  fly:
-    description: Toggle flight
-    usage: /fly [player]
-    permission: survivaladmin.staff
-  god:
-    description: Toggle god mode
-    usage: /god [player]
     permission: survivaladmin.staff
   time:
     description: Set time
@@ -122,20 +103,8 @@ permissions:
   survivaladmin.tp:
     description: Teleport to players
     default: false
-  survivaladmin.heal:
-    description: Heal players
-    default: false
-  survivaladmin.feed:
-    description: Feed players
-    default: false
   survivaladmin.gamemode:
     description: Change gamemode
-    default: false
-  survivaladmin.fly:
-    description: Toggle flight
-    default: false
-  survivaladmin.god:
-    description: Toggle god mode
     default: false
   survivaladmin.time:
     description: Change time

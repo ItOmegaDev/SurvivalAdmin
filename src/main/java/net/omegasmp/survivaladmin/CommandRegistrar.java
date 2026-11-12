@@ -25,11 +25,8 @@ public class CommandRegistrar {
         register("admin", new AdminCommand(plugin));
         register("help", new AdminCommand(plugin));
 
-        // Sit command (all players)
-        register("sit", new SitCommand(plugin));
-
         // Admin commands (staff+)
-        String[] adminCommands = {"heal", "feed", "tp", "gm", "gamemode", "fly", "god", "time", "weather", "invsee", "inv", "getoff", "invis", "vanish"};
+        String[] adminCommands = {"tp", "gm", "gamemode", "time", "weather", "invsee", "inv", "getoff", "invis", "vanish"};
         for (String cmd : adminCommands) {
             org.bukkit.command.PluginCommand pc = plugin.getCommand(cmd);
             if (pc != null) {

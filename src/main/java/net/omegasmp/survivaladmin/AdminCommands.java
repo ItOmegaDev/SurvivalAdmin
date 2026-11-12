@@ -33,18 +33,10 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
 
         String cmd = command.getName().toLowerCase();
 
-        if (cmd.equals("heal")) {
-            doHeal(player, args);
-        } else if (cmd.equals("feed")) {
-            doFeed(player, args);
-        } else if (cmd.equals("tp")) {
+        if (cmd.equals("tp")) {
             doTp(player, args);
         } else if (cmd.equals("gm") || cmd.equals("gamemode")) {
             doGamemode(player, args);
-        } else if (cmd.equals("fly")) {
-            doFly(player, args);
-        } else if (cmd.equals("god")) {
-            doGod(player, args);
         } else if (cmd.equals("time")) {
             doTime(player, args);
         } else if (cmd.equals("weather")) {
@@ -60,50 +52,9 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
         return true;
     }
 
-    private void doHeal(Player player, String[] args) {
-        if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.heal")) {
-            player.sendMessage(plugin.getConfigManager().msg("no-permission"));
-            return;
-        }
-        Player target = player;
-        if (args.length > 0) {
-            target = Bukkit.getPlayer(args[0]);
-            if (target == null) {
-                player.sendMessage(plugin.getConfigManager().msg("player-not-found").replace("{player}", args[0]));
-                return;
-            }
-        }
-        target.setHealth(target.getMaxHealth());
-        target.setFoodLevel(20);
-        target.setSaturation(20);
-        target.sendMessage(plugin.getConfigManager().msg("healed"));
-        if (!target.equals(player)) {
-            player.sendMessage(plugin.getConfigManager().msg("healed-other").replace("{player}", target.getName()));
-        }
-        plugin.getAuditLog().log(player.getName(), "HEAL", target.getName(), "health+food");
-    }
 
-    private void doFeed(Player player, String[] args) {
-        if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.feed")) {
-            player.sendMessage(plugin.getConfigManager().msg("no-permission"));
-            return;
-        }
-        Player target = player;
-        if (args.length > 0) {
-            target = Bukkit.getPlayer(args[0]);
-            if (target == null) {
-                player.sendMessage(plugin.getConfigManager().msg("player-not-found").replace("{player}", args[0]));
-                return;
-            }
-        }
-        target.setFoodLevel(20);
-        target.setSaturation(20);
-        target.sendMessage(plugin.getConfigManager().msg("fed"));
-        if (!target.equals(player)) {
-            player.sendMessage(plugin.getConfigManager().msg("fed-other").replace("{player}", target.getName()));
-        }
-        plugin.getAuditLog().log(player.getName(), "FEED", target.getName(), "food");
-    }
+
+
 
     private void doTp(Player player, String[] args) {
         if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.tp")) {
@@ -161,52 +112,9 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
         plugin.getAuditLog().log(player.getName(), "GAMEMODE", target.getName(), gm.name());
     }
 
-    private void doFly(Player player, String[] args) {
-        if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.fly")) {
-            player.sendMessage(plugin.getConfigManager().msg("no-permission"));
-            return;
-        }
-        Player target = player;
-        if (args.length > 0) {
-            target = Bukkit.getPlayer(args[0]);
-            if (target == null) {
-                player.sendMessage(plugin.getConfigManager().msg("player-not-found").replace("{player}", args[0]));
-                return;
-            }
-        }
-        boolean newState = !target.getAllowFlight();
-        target.setAllowFlight(newState);
-        target.setFlying(newState);
-        target.sendMessage(newState ? plugin.getConfigManager().msg("fly-on") : plugin.getConfigManager().msg("fly-off"));
-        if (!target.equals(player)) {
-            player.sendMessage(plugin.getConfigManager().msg("fly-other")
-                    .replace("{player}", target.getName()).replace("{state}", newState ? "enabled" : "disabled"));
-        }
-        plugin.getAuditLog().log(player.getName(), "FLY", target.getName(), newState ? "on" : "off");
-    }
 
-    private void doGod(Player player, String[] args) {
-        if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.god")) {
-            player.sendMessage(plugin.getConfigManager().msg("no-permission"));
-            return;
-        }
-        Player target = player;
-        if (args.length > 0) {
-            target = Bukkit.getPlayer(args[0]);
-            if (target == null) {
-                player.sendMessage(plugin.getConfigManager().msg("player-not-found").replace("{player}", args[0]));
-                return;
-            }
-        }
-        boolean newState = !target.isInvulnerable();
-        target.setInvulnerable(newState);
-        target.sendMessage(newState ? plugin.getConfigManager().msg("god-on") : plugin.getConfigManager().msg("god-off"));
-        if (!target.equals(player)) {
-            player.sendMessage(plugin.getConfigManager().msg("god-other")
-                    .replace("{player}", target.getName()).replace("{state}", newState ? "enabled" : "disabled"));
-        }
-        plugin.getAuditLog().log(player.getName(), "GOD", target.getName(), newState ? "on" : "off");
-    }
+
+
 
     private void doTime(Player player, String[] args) {
         if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.time")) {

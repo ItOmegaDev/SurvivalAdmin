@@ -30,13 +30,8 @@ public class AdminCommand implements CommandExecutor, org.bukkit.command.TabComp
         player.sendMessage("§7/unstaff <player> §f- remove Staff role");
         player.sendMessage("§7/owner <player> §f- grant Owner role");
         player.sendMessage("§7/unowner <player> §f- remove Owner role");
-        player.sendMessage("§7/sit §f- sit down");
-        player.sendMessage("§7/heal [player] §f- heal");
-        player.sendMessage("§7/feed [player] §f- feed");
         player.sendMessage("§7/tp <player> §f- teleport to player");
         player.sendMessage("§7/gm <0-3> [player] §f- change gamemode");
-        player.sendMessage("§7/fly [player] §f- toggle flight");
-        player.sendMessage("§7/god [player] §f- toggle god mode");
         player.sendMessage("§7/time <day|night|number> §f- change time");
         player.sendMessage("§7/weather <clear|rain|thunder> §f- change weather");
         player.sendMessage("§7/inv <player> §f- view inventory");

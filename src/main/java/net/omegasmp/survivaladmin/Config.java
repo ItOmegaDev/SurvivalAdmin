@@ -14,7 +14,6 @@ public class Config {
     private final File file;
     private FileConfiguration config;
     private FileConfiguration messages;
-    private String language;
 
     public Config(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -23,33 +22,19 @@ public class Config {
             plugin.saveResource("config.yml", false);
         }
         this.config = YamlConfiguration.loadConfiguration(file);
-        this.language = config.getString("language", "en");
         loadMessages();
     }
 
     private void loadMessages() {
-        String name = "messages_" + language + ".yml";
-        File mf = new File(plugin.getDataFolder(), name);
+        File mf = new File(plugin.getDataFolder(), "messages.yml");
         if (!mf.exists()) {
-            try {
-                plugin.saveResource(name, false);
-            } catch (IllegalArgumentException e) {
-                name = "messages_en.yml";
-                mf = new File(plugin.getDataFolder(), name);
-                if (!mf.exists()) {
-                    try { plugin.saveResource(name, false); } catch (Exception ignored) { }
-                }
-            }
+            try { plugin.saveResource("messages.yml", false); } catch (Exception ignored) { }
         }
         if (mf.exists()) {
             messages = YamlConfiguration.loadConfiguration(mf);
         } else {
             messages = config;
         }
-    }
-
-    public String getLanguage() {
-        return language;
     }
 
     public String get(String path, String def) {

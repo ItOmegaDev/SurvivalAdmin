@@ -125,8 +125,8 @@ public class RoleManager {
         List<String> owners = plugin.getConfig().getStringList("roles.owner");
         List<String> staff = plugin.getConfig().getStringList("roles.staff");
         String name = player.getName().toLowerCase();
-        if (owners.contains(name)) return "owner";
-        if (staff.contains(name)) return "staff";
+        if (owners.stream().anyMatch(s -> s.equalsIgnoreCase(name))) return "owner";
+        if (staff.stream().anyMatch(s -> s.equalsIgnoreCase(name))) return "staff";
         return plugin.getConfig().getString("roles.default", "user");
     }
 
@@ -142,8 +142,8 @@ public class RoleManager {
         // Check config
         List<String> owners = plugin.getConfig().getStringList("roles.owner");
         List<String> staff = plugin.getConfig().getStringList("roles.staff");
-        if (owners.contains(lower)) return "owner";
-        if (staff.contains(lower)) return "staff";
+        if (owners.stream().anyMatch(s -> s.equalsIgnoreCase(lower))) return "owner";
+        if (staff.stream().anyMatch(s -> s.equalsIgnoreCase(lower))) return "staff";
         return plugin.getConfig().getString("roles.default", "user");
     }
 

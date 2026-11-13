@@ -26,11 +26,14 @@ public class CommandRegistrar {
         register("help", new AdminCommand(plugin));
 
         // Admin commands (staff+)
-        String[] adminCommands = {"tp", "gm", "gamemode", "time", "weather", "invsee", "inv", "getoff", "invis", "vanish"};
+        String[] adminCommands = {"tp", "gm", "gamemode", "time", "weather", "invsee", "inv",
+                "getoff", "invis", "vanish", "kick", "mute", "unmute", "freeze", "unfreeze",
+                "clearchat", "cc", "broadcast", "bc", "warn"};
         for (String cmd : adminCommands) {
             org.bukkit.command.PluginCommand pc = plugin.getCommand(cmd);
             if (pc != null) {
                 pc.setExecutor(adminCmds);
+                pc.setTabCompleter(adminCmds);
             }
         }
     }

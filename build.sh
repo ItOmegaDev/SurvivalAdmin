@@ -2,7 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$(readlink -f "$0")")"
 
-VERSION="2.0.0"
+VERSION="2.1.0"
 JAR_NAME="SurvivalAdmin-${VERSION}.jar"
 BASE="$(pwd)"
 
@@ -10,15 +10,17 @@ PAPER_API="${PAPER_API:-$(find "$BASE"/../../servers -name 'purpur-api-*.jar' 2>
 ADVENTURE_API="${ADVENTURE_API:-$(find "$BASE"/../../servers -name 'adventure-api-*.jar' 2>/dev/null | head -1)}"
 ADVENTURE_KEY="${ADVENTURE_KEY:-$(find "$BASE"/../../servers -name 'adventure-key-*.jar' 2>/dev/null | head -1)}"
 BUNGEE_CHAT="${BUNGEE_CHAT:-$(find "$BASE"/../../servers -name 'bungeecord-chat-*.jar' 2>/dev/null | head -1)}"
+ANNOTATIONS="${ANNOTATIONS:-$(find "$BASE"/../../servers -name 'annotations-*.jar' 2>/dev/null | head -1)}"
+GUAVA="${GUAVA:-$(find "$BASE"/../../servers -name 'guava-*.jar' 2>/dev/null | head -1)}"
 
-for f in "$PAPER_API" "$ADVENTURE_API" "$ADVENTURE_KEY" "$BUNGEE_CHAT"; do
+for f in "$PAPER_API" "$ADVENTURE_API" "$ADVENTURE_KEY" "$BUNGEE_CHAT" "$ANNOTATIONS" "$GUAVA"; do
   if [ ! -f "$f" ]; then
     echo "Missing: $f" >&2
     exit 1
   fi
 done
 
-CP="$PAPER_API:$ADVENTURE_API:$ADVENTURE_KEY:$BUNGEE_CHAT"
+CP="$PAPER_API:$ADVENTURE_API:$ADVENTURE_KEY:$BUNGEE_CHAT:$ANNOTATIONS:$GUAVA"
 
 rm -rf target/classes target
 mkdir -p target/classes

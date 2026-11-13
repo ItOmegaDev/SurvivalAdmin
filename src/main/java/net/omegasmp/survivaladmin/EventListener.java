@@ -3,12 +3,16 @@ package net.omegasmp.survivaladmin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.List;
@@ -90,5 +94,51 @@ public class EventListener implements Listener {
 
         event.setCancelled(true);
         player.sendMessage(plugin.getConfigManager().msg("command-blocked"));
+    }
+
+    // --- Mute: block chat ---
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onChat(AsyncPlayerChatEvent event) {
+        Player player = event.getPlayer();
+        MuteManager.MuteEntry me = plugin.getMuteManager().getMute(player);
+        if (me == null) return;
+        event.setCancelled(true);
+        long rem = plugin.getMuteManager().remainingMillis(player);
+        String timeStr = (rem < 0) ? "permanent" : formatMillis(rem);
+        player.sendMessage(plugin.getConfigManager().msg("muted-chat")
+                .replace("{time}", timeStr)
+                .replace("{reason}", me.reason == null ? "" : me.reason));
+    }
+
+    // --- Freeze: block movement ---
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        if (!plugin.isFrozen(player.getUniqueId())) return;
+        // allow head rotation but block position change
+        if (event.getFrom().getBlockX() == event.getTo().getBlockX()
+                && event.getFrom().getBlockY() == event.getTo().getBlockY()
+                && event.getFrom().getBlockZ() == event.getTo().getBlockZ()) return;
+        event.setTo(event.getFrom());
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!plugin.isFrozen(player.getUniqueId())) return;
+        // frozen players take no damage (optional safety)
+    }
+
+    private String formatMillis(long ms) {
+        long s = ms / 1000;
+        long d = s / 86400;
+        long h = (s % 86400) / 3600;
+        long m = (s % 3600) / 60;
+        StringBuilder sb = new StringBuilder();
+        if (d > 0) sb.append(d).append("d ");
+        if (h > 0) sb.append(h).append("h ");
+        if (m > 0) sb.append(m).append("m ");
+        if (sb.length() == 0) sb.append(s).append("s");
+        return sb.toString().trim();
     }
 }

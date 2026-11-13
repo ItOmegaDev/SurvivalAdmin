@@ -36,6 +36,14 @@ public class AdminCommand implements CommandExecutor, org.bukkit.command.TabComp
         player.sendMessage("§7/weather <clear|rain|thunder> §f- change weather");
         player.sendMessage("§7/inv <player> §f- view inventory");
         player.sendMessage("§7/getoff <player> <time> [reason] §f- ban player");
+        player.sendMessage("§7/kick <player> [reason] §f- kick player");
+        player.sendMessage("§7/mute <player> [time] [reason] §f- mute player");
+        player.sendMessage("§7/unmute <player> §f- unmute player");
+        player.sendMessage("§7/freeze <player> §f- freeze player");
+        player.sendMessage("§7/unfreeze <player> §f- unfreeze player");
+        player.sendMessage("§7/clearchat §f- clear chat");
+        player.sendMessage("§7/broadcast <msg> §f- broadcast message");
+        player.sendMessage("§7/warn <player> <reason> §f- warn player");
         player.sendMessage("§7/invis §f- toggle invisibility");
         return true;
     }

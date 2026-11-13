@@ -22,17 +22,18 @@ import java.util.*;
  * Features:
  * - Role-based access control (user, staff, owner) with permission inheritance
  * - UUID-based role storage (immune to name changes)
-- Atomic file writes (crash-safe)
-- Granular permissions (survivaladmin.kick, survivaladmin.ban, etc.)
-- Namespace/alias bypass prevention
-- Command blocking for regular users
-- Custom messages (join, quit, death, kill)
-- Admin commands: tp, gamemode, time, weather, invsee, getoff, vanish
-- Audit log for all admin actions
-- YAML config
+ * - Atomic file writes (crash-safe)
+ * - Granular permissions (survivaladmin.kick, survivaladmin.ban, etc.)
+ * - Namespace/alias bypass prevention
+ * - Command blocking for regular users
+ * - Custom messages (join, quit, death, kill)
+ * - Admin commands: tp, gamemode, time, weather, invsee, getoff, vanish
+ * - Moderation: kick, mute, freeze, clearchat, broadcast, warn
+ * - Mute + warn persistence (mutes.json, warns.json)
+ * - YAML config
  *
  * Made by Omega (@ItOmega)
- * Version: 2.0.0
+ * Version: 2.1.0
  */
 public final class SurvivalAdmin extends JavaPlugin {
 
@@ -40,7 +41,11 @@ public final class SurvivalAdmin extends JavaPlugin {
     private RoleManager roleManager;
     private CommandBlocker commandBlocker;
     private Config config;
-    private AuditLog auditLog;
+    private MuteManager muteManager;
+    private WarnManager warnManager;
+
+    // Frozen players (in-memory, cleared on restart)
+    private final Set<java.util.UUID> frozen = new java.util.HashSet<>();
 
     @Override
     public void onEnable() {
@@ -49,20 +54,22 @@ public final class SurvivalAdmin extends JavaPlugin {
         this.config = new Config(this);
         this.roleManager = new RoleManager(this);
         this.commandBlocker = new CommandBlocker(this);
-        this.auditLog = new AuditLog(this);
+        this.muteManager = new MuteManager(this);
+        this.warnManager = new WarnManager(this);
 
         Bukkit.getPluginManager().registerEvents(new EventListener(this), this);
         Bukkit.getPluginManager().registerEvents(this.commandBlocker, this);
 
         new CommandRegistrar(this).registerAll();
 
-        getLogger().info("SurvivalAdmin v2.0.0 enabled — Made by Omega (@ItOmega)");
+        getLogger().info("SurvivalAdmin v2.1.0 enabled — Made by Omega (@ItOmega)");
     }
 
     @Override
     public void onDisable() {
         if (this.roleManager != null) this.roleManager.save();
-        if (this.auditLog != null) this.auditLog.close();
+        if (this.muteManager != null) this.muteManager.save();
+        if (this.warnManager != null) this.warnManager.save();
         try {
             org.bukkit.Bukkit.broadcastMessage(this.config.msg("stop"));
         } catch (Exception ignored) { }
@@ -73,5 +80,11 @@ public final class SurvivalAdmin extends JavaPlugin {
     public RoleManager getRoleManager() { return roleManager; }
     public CommandBlocker getCommandBlocker() { return commandBlocker; }
     public Config getConfigManager() { return config; }
-    public AuditLog getAuditLog() { return auditLog; }
+    public MuteManager getMuteManager() { return muteManager; }
+    public WarnManager getWarnManager() { return warnManager; }
+
+    public boolean isFrozen(java.util.UUID uuid) { return frozen.contains(uuid); }
+    public void setFrozen(java.util.UUID uuid, boolean state) {
+        if (state) frozen.add(uuid); else frozen.remove(uuid);
+    }
 }

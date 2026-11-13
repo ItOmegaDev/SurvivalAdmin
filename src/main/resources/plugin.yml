@@ -71,6 +71,46 @@ commands:
     description: Toggle invisibility
     usage: /vanish
     permission: survivaladmin.staff
+  kick:
+    description: Kick a player
+    usage: /kick <player> [reason]
+    permission: survivaladmin.staff
+  mute:
+    description: Mute a player
+    usage: /mute <player> [time] [reason]
+    permission: survivaladmin.staff
+  unmute:
+    description: Unmute a player
+    usage: /unmute <player>
+    permission: survivaladmin.staff
+  freeze:
+    description: Freeze a player
+    usage: /freeze <player>
+    permission: survivaladmin.staff
+  unfreeze:
+    description: Unfreeze a player
+    usage: /unfreeze <player>
+    permission: survivaladmin.staff
+  clearchat:
+    description: Clear chat
+    usage: /clearchat
+    permission: survivaladmin.staff
+  cc:
+    description: Clear chat (alias)
+    usage: /cc
+    permission: survivaladmin.staff
+  broadcast:
+    description: Broadcast a message
+    usage: /broadcast <msg>
+    permission: survivaladmin.staff
+  bc:
+    description: Broadcast a message (alias)
+    usage: /bc <msg>
+    permission: survivaladmin.staff
+  warn:
+    description: Warn a player
+    usage: /warn <player> <reason>
+    permission: survivaladmin.staff
 
 permissions:
   survivaladmin.owner:
@@ -117,4 +157,25 @@ permissions:
     default: false
   survivaladmin.vanish:
     description: Toggle invisibility
+    default: false
+  survivaladmin.kick:
+    description: Kick players
+    default: false
+  survivaladmin.mute:
+    description: Mute players
+    default: false
+  survivaladmin.unmute:
+    description: Unmute players
+    default: false
+  survivaladmin.freeze:
+    description: Freeze players
+    default: false
+  survivaladmin.clearchat:
+    description: Clear chat
+    default: false
+  survivaladmin.broadcast:
+    description: Broadcast messages
+    default: false
+  survivaladmin.warn:
+    description: Warn players
     default: false

@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCompleter {
 
@@ -33,29 +34,28 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
 
         String cmd = command.getName().toLowerCase();
 
-        if (cmd.equals("tp")) {
-            doTp(player, args);
-        } else if (cmd.equals("gm") || cmd.equals("gamemode")) {
-            doGamemode(player, args);
-        } else if (cmd.equals("time")) {
-            doTime(player, args);
-        } else if (cmd.equals("weather")) {
-            doWeather(player, args);
-        } else if (cmd.equals("invsee") || cmd.equals("inv")) {
-            doInvsee(player, args);
-        } else if (cmd.equals("getoff")) {
-            doGetoff(player, args);
-        } else if (cmd.equals("invis") || cmd.equals("vanish")) {
-            doVanish(player);
+        switch (cmd) {
+            case "tp" -> doTp(player, args);
+            case "gm", "gamemode" -> doGamemode(player, args);
+            case "time" -> doTime(player, args);
+            case "weather" -> doWeather(player, args);
+            case "invsee", "inv" -> doInvsee(player, args);
+            case "getoff" -> doGetoff(player, args);
+            case "invis", "vanish" -> doVanish(player);
+            case "kick" -> doKick(player, args);
+            case "mute" -> doMute(player, args);
+            case "unmute" -> doUnmute(player, args);
+            case "freeze" -> doFreeze(player, args);
+            case "unfreeze" -> doUnfreeze(player, args);
+            case "clearchat", "cc" -> doClearChat(player);
+            case "broadcast", "bc" -> doBroadcast(player, args);
+            case "warn" -> doWarn(player, args);
         }
 
         return true;
     }
 
-
-
-
-
+    // ---- tp ----
     private void doTp(Player player, String[] args) {
         if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.tp")) {
             player.sendMessage(plugin.getConfigManager().msg("no-permission"));
@@ -72,9 +72,9 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
         }
         player.teleport(target);
         player.sendMessage(plugin.getConfigManager().msg("teleported").replace("{player}", target.getName()));
-        plugin.getAuditLog().log(player.getName(), "TP", target.getName(), "teleport");
     }
 
+    // ---- gamemode ----
     private void doGamemode(Player player, String[] args) {
         if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.gamemode")) {
             player.sendMessage(plugin.getConfigManager().msg("no-permission"));
@@ -109,13 +109,9 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
             player.sendMessage(plugin.getConfigManager().msg("gamemode-changed-other")
                     .replace("{player}", target.getName()).replace("{mode}", gm.name()));
         }
-        plugin.getAuditLog().log(player.getName(), "GAMEMODE", target.getName(), gm.name());
     }
 
-
-
-
-
+    // ---- time ----
     private void doTime(Player player, String[] args) {
         if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.time")) {
             player.sendMessage(plugin.getConfigManager().msg("no-permission"));
@@ -140,9 +136,9 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
         }
         player.getWorld().setTime(time);
         player.sendMessage(plugin.getConfigManager().msg("time-set").replace("{time}", args[0]));
-        plugin.getAuditLog().log(player.getName(), "TIME", player.getWorld().getName(), args[0]);
     }
 
+    // ---- weather ----
     private void doWeather(Player player, String[] args) {
         if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.weather")) {
             player.sendMessage(plugin.getConfigManager().msg("no-permission"));
@@ -169,9 +165,9 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
             player.sendMessage(plugin.getConfigManager().msg("invalid-weather"));
             return;
         }
-        plugin.getAuditLog().log(player.getName(), "WEATHER", player.getWorld().getName(), args[0]);
     }
 
+    // ---- invsee ----
     private void doInvsee(Player player, String[] args) {
         if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.invsee")) {
             player.sendMessage(plugin.getConfigManager().msg("no-permission"));
@@ -188,9 +184,9 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
         }
         player.openInventory(target.getInventory());
         player.sendMessage(plugin.getConfigManager().msg("invsee-opened").replace("{player}", target.getName()));
-        plugin.getAuditLog().log(player.getName(), "INV", target.getName(), "opened inventory");
     }
 
+    // ---- getoff (ban) ----
     private void doGetoff(Player player, String[] args) {
         if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.ban")) {
             player.sendMessage(plugin.getConfigManager().msg("no-permission"));
@@ -219,9 +215,9 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
         }
         org.bukkit.BanList banList = Bukkit.getBanList(org.bukkit.BanList.Type.NAME);
         if (duration == 0) {
-            ((org.bukkit.BanList) banList).addBan(targetName, reason, (java.util.Date) null, player.getName());
+            banList.addBan(targetName, reason, (java.util.Date) null, player.getName());
         } else {
-            ((org.bukkit.BanList) banList).addBan(targetName, reason, new Date(System.currentTimeMillis() + duration), player.getName());
+            banList.addBan(targetName, reason, new Date(System.currentTimeMillis() + duration), player.getName());
         }
         if (target != null) {
             String timeStr = (duration == 0) ? "permanent" : formatDuration(duration);
@@ -231,9 +227,9 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
         String timeStr = (duration == 0) ? "permanent" : formatDuration(duration);
         player.sendMessage(plugin.getConfigManager().msg("banned")
                 .replace("{player}", targetName).replace("{time}", timeStr).replace("{reason}", reason));
-        plugin.getAuditLog().log(player.getName(), "BAN", targetName, "duration=" + duration + " reason=" + reason);
     }
 
+    // ---- vanish ----
     private void doVanish(Player player) {
         if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.vanish")) {
             player.sendMessage(plugin.getConfigManager().msg("no-permission"));
@@ -249,7 +245,6 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
             }
             player.setPlayerListName("");
             player.sendMessage(plugin.getConfigManager().msg("vanished-on"));
-            plugin.getAuditLog().log(player.getName(), "VANISH", player.getName(), "on");
         } else {
             player.removeMetadata("survivaladmin_vanished", plugin);
             for (Player p : Bukkit.getOnlinePlayers()) {
@@ -259,17 +254,231 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
             }
             player.setPlayerListName(player.getName());
             player.sendMessage(plugin.getConfigManager().msg("vanished-off"));
-            plugin.getAuditLog().log(player.getName(), "VANISH", player.getName(), "off");
         }
     }
 
+    // ---- kick ----
+    private void doKick(Player player, String[] args) {
+        if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.kick")) {
+            player.sendMessage(plugin.getConfigManager().msg("no-permission"));
+            return;
+        }
+        if (args.length < 1) {
+            player.sendMessage(plugin.getConfigManager().msg("usage-kick"));
+            return;
+        }
+        Player target = Bukkit.getPlayer(args[0]);
+        if (target == null) {
+            player.sendMessage(plugin.getConfigManager().msg("player-not-found").replace("{player}", args[0]));
+            return;
+        }
+        String reason = "Kicked by admin";
+        if (args.length > 1) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 1; i < args.length; i++) {
+                if (i > 1) sb.append(" ");
+                sb.append(args[i]);
+            }
+            reason = sb.toString();
+        }
+        target.kickPlayer(plugin.getConfigManager().msg("kicked")
+                .replace("{player}", target.getName()).replace("{reason}", reason));
+        player.sendMessage(plugin.getConfigManager().msg("kick-success")
+                .replace("{player}", target.getName()).replace("{reason}", reason));
+        Bukkit.broadcastMessage(plugin.getConfigManager().msg("kick-broadcast")
+                .replace("{player}", target.getName()).replace("{admin}", player.getName()));
+    }
+
+    // ---- mute ----
+    private void doMute(Player player, String[] args) {
+        if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.mute")) {
+            player.sendMessage(plugin.getConfigManager().msg("no-permission"));
+            return;
+        }
+        if (args.length < 1) {
+            player.sendMessage(plugin.getConfigManager().msg("usage-mute"));
+            return;
+        }
+        Player target = Bukkit.getPlayer(args[0]);
+        if (target == null) {
+            player.sendMessage(plugin.getConfigManager().msg("player-not-found").replace("{player}", args[0]));
+            return;
+        }
+        String reason = "Muted by admin";
+        long duration = 0; // 0 = permanent by default? use config default
+        // parse optional time + reason
+        int idx = 1;
+        if (args.length > 1) {
+            long parsed = parseDuration(args[1]);
+            if (parsed != -1) {
+                duration = parsed;
+                idx = 2;
+            }
+        }
+        if (duration == 0 && args.length > 1 && parseDuration(args[1]) == -1) {
+            // no time given -> use config default
+            String def = plugin.getConfigManager().get("moderation.mute.default-duration", "10m");
+            duration = parseDuration(def);
+            if (duration == -1) duration = 10 * 60 * 1000L;
+        }
+        if (args.length > idx) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = idx; i < args.length; i++) {
+                if (i > idx) sb.append(" ");
+                sb.append(args[i]);
+            }
+            reason = sb.toString();
+        }
+        plugin.getMuteManager().mute(target, reason, duration, player.getName());
+        String timeStr = (duration <= 0) ? "permanent" : formatDuration(duration);
+        target.sendMessage(plugin.getConfigManager().msg("muted-target")
+                .replace("{time}", timeStr).replace("{reason}", reason));
+        player.sendMessage(plugin.getConfigManager().msg("mute-success")
+                .replace("{player}", target.getName()).replace("{time}", timeStr));
+    }
+
+    // ---- unmute ----
+    private void doUnmute(Player player, String[] args) {
+        if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.unmute")) {
+            player.sendMessage(plugin.getConfigManager().msg("no-permission"));
+            return;
+        }
+        if (args.length < 1) {
+            player.sendMessage(plugin.getConfigManager().msg("usage-unmute"));
+            return;
+        }
+        Player target = Bukkit.getPlayer(args[0]);
+        if (target != null) {
+            plugin.getMuteManager().unmute(target);
+        } else {
+            plugin.getMuteManager().unmuteByName(args[0]);
+        }
+        player.sendMessage(plugin.getConfigManager().msg("unmute-success").replace("{player}", args[0]));
+    }
+
+    // ---- freeze ----
+    private void doFreeze(Player player, String[] args) {
+        if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.freeze")) {
+            player.sendMessage(plugin.getConfigManager().msg("no-permission"));
+            return;
+        }
+        if (args.length < 1) {
+            player.sendMessage(plugin.getConfigManager().msg("usage-freeze"));
+            return;
+        }
+        Player target = Bukkit.getPlayer(args[0]);
+        if (target == null) {
+            player.sendMessage(plugin.getConfigManager().msg("player-not-found").replace("{player}", args[0]));
+            return;
+        }
+        if (target.equals(player)) {
+            player.sendMessage(plugin.getConfigManager().msg("cannot-self"));
+            return;
+        }
+        plugin.setFrozen(target.getUniqueId(), true);
+        target.sendMessage(plugin.getConfigManager().msg("frozen-target"));
+        player.sendMessage(plugin.getConfigManager().msg("freeze-success").replace("{player}", target.getName()));
+    }
+
+    // ---- unfreeze ----
+    private void doUnfreeze(Player player, String[] args) {
+        if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.freeze")) {
+            player.sendMessage(plugin.getConfigManager().msg("no-permission"));
+            return;
+        }
+        if (args.length < 1) {
+            player.sendMessage(plugin.getConfigManager().msg("usage-unfreeze"));
+            return;
+        }
+        Player target = Bukkit.getPlayer(args[0]);
+        if (target == null) {
+            player.sendMessage(plugin.getConfigManager().msg("player-not-found").replace("{player}", args[0]));
+            return;
+        }
+        plugin.setFrozen(target.getUniqueId(), false);
+        target.sendMessage(plugin.getConfigManager().msg("unfrozen-target"));
+        player.sendMessage(plugin.getConfigManager().msg("unfreeze-success").replace("{player}", target.getName()));
+    }
+
+    // ---- clearchat ----
+    private void doClearChat(Player player) {
+        if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.clearchat")) {
+            player.sendMessage(plugin.getConfigManager().msg("no-permission"));
+            return;
+        }
+        int lines = plugin.getConfigManager().getInt("moderation.clearchat.lines", 100);
+        for (int i = 0; i < lines; i++) {
+            Bukkit.broadcastMessage("");
+        }
+        Bukkit.broadcastMessage(plugin.getConfigManager().msg("clearchat-done").replace("{admin}", player.getName()));
+    }
+
+    // ---- broadcast ----
+    private void doBroadcast(Player player, String[] args) {
+        if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.broadcast")) {
+            player.sendMessage(plugin.getConfigManager().msg("no-permission"));
+            return;
+        }
+        if (args.length < 1) {
+            player.sendMessage(plugin.getConfigManager().msg("usage-broadcast"));
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < args.length; i++) {
+            if (i > 0) sb.append(" ");
+            sb.append(args[i]);
+        }
+        String msg = sb.toString().replace("&", "§");
+        String prefix = plugin.getConfigManager().get("moderation.broadcast.prefix", "&6[Broadcast] ");
+        Bukkit.broadcastMessage(prefix.replace("&", "§") + msg);
+    }
+
+    // ---- warn ----
+    private void doWarn(Player player, String[] args) {
+        if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.warn")) {
+            player.sendMessage(plugin.getConfigManager().msg("no-permission"));
+            return;
+        }
+        if (args.length < 2) {
+            player.sendMessage(plugin.getConfigManager().msg("usage-warn"));
+            return;
+        }
+        Player target = Bukkit.getPlayer(args[0]);
+        if (target == null) {
+            player.sendMessage(plugin.getConfigManager().msg("player-not-found").replace("{player}", args[0]));
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i < args.length; i++) {
+            if (i > 1) sb.append(" ");
+            sb.append(args[i]);
+        }
+        String reason = sb.toString();
+        int count = plugin.getWarnManager().warn(target, reason, player.getName());
+        int threshold = plugin.getConfigManager().getInt("moderation.warn.auto-ban-threshold", 3);
+        target.sendMessage(plugin.getConfigManager().msg("warned-target")
+                .replace("{count}", String.valueOf(count)).replace("{reason}", reason));
+        player.sendMessage(plugin.getConfigManager().msg("warn-success")
+                .replace("{player}", target.getName()).replace("{count}", String.valueOf(count)));
+        Bukkit.broadcastMessage(plugin.getConfigManager().msg("warn-broadcast")
+                .replace("{player}", target.getName()).replace("{admin}", player.getName()));
+
+        if (threshold > 0 && count >= threshold) {
+            long dur = parseDuration(plugin.getConfigManager().get("moderation.warn.auto-ban-duration", "1d"));
+            if (dur <= 0) dur = 24 * 60 * 60 * 1000L;
+            org.bukkit.BanList banList = Bukkit.getBanList(org.bukkit.BanList.Type.NAME);
+            banList.addBan(target.getName(), "Auto-ban: " + count + " warnings", new Date(System.currentTimeMillis() + dur), "Console");
+            target.kickPlayer(plugin.getConfigManager().msg("auto-banned").replace("{count}", String.valueOf(count)));
+            Bukkit.broadcastMessage(plugin.getConfigManager().msg("auto-ban-broadcast")
+                    .replace("{player}", target.getName()).replace("{count}", String.valueOf(count)));
+        }
+    }
+
+    // ---- helpers ----
     private long parseDuration(String input) {
-        if (input.equalsIgnoreCase("permanent") || input.equalsIgnoreCase("perm")) {
-            return 0;
-        }
-        if (input.equalsIgnoreCase("0")) {
-            return 0;
-        }
+        if (input == null) return -1;
+        if (input.equalsIgnoreCase("permanent") || input.equalsIgnoreCase("perm")) return 0;
+        if (input.equalsIgnoreCase("0")) return 0;
         long total = 0;
         String num = "";
         for (int i = 0; i < input.length(); i++) {
@@ -324,6 +533,10 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
                 for (String v : new String[]{"clear","rain","thunder"}) {
                     if (v.startsWith(prefix)) completions.add(v);
                 }
+            } else if (cmd.equals("mute")) {
+                for (String v : new String[]{"10m","1h","1d","permanent"}) {
+                    // not a player, skip
+                }
             } else {
                 for (org.bukkit.entity.Player p : org.bukkit.Bukkit.getOnlinePlayers()) {
                     if (p.getName().toLowerCase().startsWith(prefix)) completions.add(p.getName());
@@ -339,8 +552,11 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
             for (String v : new String[]{"10m","1h","1d","permanent"}) {
                 if (v.startsWith(prefix)) completions.add(v);
             }
-        } else if (args.length >= 3 && cmd.equals("getoff")) {
-            // no completion
+        } else if (args.length == 2 && cmd.equals("mute")) {
+            String prefix = args[1].toLowerCase();
+            for (String v : new String[]{"10m","1h","1d","permanent"}) {
+                if (v.startsWith(prefix)) completions.add(v);
+            }
         }
         return completions;
     }
